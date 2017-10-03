@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+*          Copyright 2016-2026 Rogério Lecarião Leite
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*
+*  CEO 2016: Rogério Lecarião Leite; ROLL Software
+*/
+-->
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+    <persistence-unit name="LFMSPU_DERBY" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <class>com.rollsoftware.br.common.db.entity.ObjectData</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <properties>
+            <!--connection-->
+            <property name="javax.persistence.target-database" value="DERBY"/>
+            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+            <property name="javax.persistence.jdbc.url" value="${url.database.connect}"/>
+            <property name="javax.persistence.jdbc.user" value="${javax.persistence.jdbc.user}"/>
+            <property name="javax.persistence.jdbc.password" value="${javax.persistence.jdbc.password}"/>
+            <!--
+            <property name="eclipselink.ddl-generation" value="create-tables" />
+            <property name="eclipselink.ddl-generation.output-mode" value="database" />
+            -->
+            <property name="eclipselink.canonicalmodel.subpackage" value="derby"/>
+            <!--lock-->
+            <property name="javax.persistence.lock.timeout" value="1000"/>
+            <!--log-->
+            <!--<property name="eclipselink.logging.level" value=""/>-->
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="eclipselink.logging.level.sql" value="FINEST"/>
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="LFMSPU_MYSQL" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <class>com.rollsoftware.br.common.db.entity.ObjectData</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <properties>
+            <!--connection-->
+            <property name="javax.persistence.target-database" value="MYSQL"/>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="${url.database.connect}"/>
+            <property name="javax.persistence.jdbc.user" value="${javax.persistence.jdbc.user}"/>
+            <property name="javax.persistence.jdbc.password" value="${javax.persistence.jdbc.password}"/>
+            <!--
+            <property name="eclipselink.ddl-generation" value="create-tables" />
+            <property name="eclipselink.ddl-generation.output-mode" value="database" />
+            -->
+            <property name="eclipselink.canonicalmodel.subpackage" value="mysql"/>
+            <!--lock-->
+            <property name="javax.persistence.lock.timeout" value="1000"/>
+            <!--log-->
+            <!--<property name="eclipselink.logging.level" value=""/>-->
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="eclipselink.logging.level.sql" value="FINEST"/>
+        </properties>
+    </persistence-unit>
+</persistence>

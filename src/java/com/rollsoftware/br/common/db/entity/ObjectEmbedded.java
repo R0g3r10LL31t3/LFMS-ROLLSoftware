@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -52,7 +53,7 @@ public abstract class ObjectEmbedded implements ObjectInterface {
         this.objectInterface = objectInterface;
     }
 
-    @XmlElement(type = ObjectData.class)
+    @XmlTransient
     public ObjectInterface getParent() {
         return objectInterface;
     }
@@ -83,6 +84,26 @@ public abstract class ObjectEmbedded implements ObjectInterface {
         }
 
         return null;
+    }
+
+    @Override
+    public <T extends ObjectDataInterfacePK> T getODPK() {
+        if (getParent() != null) {
+            return (T) getParent().getODPK();
+        }
+
+        return (T) null;
+    }
+
+    @Override
+    public boolean equalsODPK(ObjectDataInterfacePK odpk) {
+        if (odpk == null) {
+            return false;
+        }
+        if (!(odpk instanceof ObjectDataInterfacePK)) {
+            return false;
+        }
+        return Objects.equals(getODPK(), odpk);
     }
 
     @Override

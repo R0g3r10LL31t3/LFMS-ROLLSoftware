@@ -15,25 +15,22 @@
  *
  *  CEO 2016: Rogério Lecarião Leite; ROLL Software
  */
-package com.rollsoftware.br.common.db.entity;
+package com.rollsoftware.br.lfms.db.impl.repo;
+
+import com.rollsoftware.br.common.db.repo.AbstractRepository;
+import com.rollsoftware.br.lfms.db.impl.entity.StockTreeNode;
+import javax.enterprise.context.RequestScoped;
 
 /**
  *
  * @author Rogério
- * @date November, 2016
+ * @date October, 2017
  */
-public interface ObjectInterface {
+@RequestScoped
+public class StockTreeNodeRepository
+        extends AbstractRepository<StockTreeNode, StockTreeNode.ObjectDataPK> {
 
-    public void generateUUID();
-
-    public String getUUID();
-
-    public Integer getId();
-
-    public <T extends ObjectDataInterfacePK> T getODPK();
-
-    public boolean equalsODPK(ObjectDataInterfacePK odpk);
-
-    public static interface ObjectDataInterfacePK {
+    public StockTreeNodeRepository() {
+        super(StockTreeNode.class);
     }
 }

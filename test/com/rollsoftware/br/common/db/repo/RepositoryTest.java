@@ -67,12 +67,14 @@ public abstract class RepositoryTest {
         return em;
     }
 
-    public abstract <T extends ObjectInterface, ID, R>
+    public abstract <T extends ObjectInterface, ID extends ObjectInterface.ObjectDataInterfacePK, R>
             Repository<T, ID, R> getNewInstance();
 
-    public abstract Object getEntityPK();
+    public abstract <ODPK extends ObjectInterface.ObjectDataInterfacePK>
+            ODPK getEntityPK();
 
-    public abstract Object getEntityPK_NotFound();
+    public abstract <ODPK extends ObjectInterface.ObjectDataInterfacePK>
+            ODPK getEntityPK_NotFound();
 
     public abstract <T extends ObjectInterface> Class<T> getEntityClass();
 
@@ -84,7 +86,7 @@ public abstract class RepositoryTest {
             void save(T objectInterface) {
         em.getTransaction().begin();
 
-        em.createNativeQuery("set schema ACCOUNT_MANAGER_DB_APP");
+        em.createNativeQuery("set schema LFMS_DB");
 
         em.persist(objectInterface);
         em.flush();
@@ -96,7 +98,9 @@ public abstract class RepositoryTest {
             T load(EntityManager em, Class<T> clazz, Object id) {
         ObjectInterface _objectInterface
                 = em.find(clazz, id);
-        em.refresh(_objectInterface);
+        if (_objectInterface != null) {
+            em.refresh(_objectInterface);
+        }
         return (T) _objectInterface;
     }
 
@@ -150,11 +154,12 @@ public abstract class RepositoryTest {
         System.out.println("create");
         EntityManager entityManager = getEntityManager();
         ObjectInterface entity = createEntity();
-        Repository<ObjectInterface, Object, String> instance = getNewInstance();
+        Repository<ObjectInterface, ObjectInterface.ObjectDataInterfacePK, String> instance = getNewInstance();
 
         String result = instance.create(entityManager, entity);
 
         assertNotNull(entity.getUUID());
+        assertNotNull(entity.getODPK());
     }
 
     /**
@@ -168,12 +173,13 @@ public abstract class RepositoryTest {
         System.out.println("edit");
         EntityManager entityManager = getEntityManager();
         ObjectInterface entity = getEntity();
-        Object id = getEntityPK();
-        Repository<ObjectInterface, Object, String> instance = getNewInstance();
+        ObjectInterface.ObjectDataInterfacePK id = getEntityPK();
+        Repository<ObjectInterface, ObjectInterface.ObjectDataInterfacePK, String> instance = getNewInstance();
 
         String result = instance.edit(entityManager, id, entity);
 
         assertNotNull(entity.getUUID());
+        assertNotNull(entity.getODPK());
     }
 
     /**
@@ -187,11 +193,12 @@ public abstract class RepositoryTest {
         System.out.println("edit");
         EntityManager entityManager = getEntityManager();
         ObjectInterface entity = getEntity();
-        Repository<ObjectInterface, Object, String> instance = getNewInstance();
+        Repository<ObjectInterface, ObjectInterface.ObjectDataInterfacePK, String> instance = getNewInstance();
 
         String result = instance.edit(entityManager, entity);
 
         assertNotNull(entity.getUUID());
+        assertNotNull(entity.getODPK());
     }
 
     /**
@@ -205,12 +212,13 @@ public abstract class RepositoryTest {
         System.out.println("remove");
         EntityManager entityManager = getEntityManager();
         ObjectInterface entity = getEntity();
-        Object id = getEntityPK();
-        Repository<ObjectInterface, Object, String> instance = getNewInstance();
+        ObjectInterface.ObjectDataInterfacePK id = getEntityPK();
+        Repository<ObjectInterface, ObjectInterface.ObjectDataInterfacePK, String> instance = getNewInstance();
 
         String result = instance.remove(entityManager, id);
 
         assertNotNull(entity.getUUID());
+        assertNotNull(entity.getODPK());
     }
 
     /**
@@ -224,13 +232,13 @@ public abstract class RepositoryTest {
         System.out.println("remove");
         EntityManager entityManager = getEntityManager();
         ObjectInterface entity = getEntity();
-        Object id = getEntityPK();
-        Repository<ObjectInterface, Object, String> instance = getNewInstance();
+        ObjectInterface.ObjectDataInterfacePK id = getEntityPK();
+        Repository<ObjectInterface, ObjectInterface.ObjectDataInterfacePK, String> instance = getNewInstance();
 
-        String result = instance.remove(
-                entityManager, entity.getUUID(), entity);
+        String result = instance.remove(entityManager, id, entity);
 
         assertNotNull(entity.getUUID());
+        assertNotNull(entity.getODPK());
     }
 
     /**
@@ -244,8 +252,8 @@ public abstract class RepositoryTest {
         System.out.println("find");
         EntityManager entityManager = getEntityManager();
         ObjectInterface entity = getEntity();
-        Object id = getEntityPK();
-        Repository<ObjectInterface, Object, String> instance = getNewInstance();
+        ObjectInterface.ObjectDataInterfacePK id = getEntityPK();
+        Repository<ObjectInterface, ObjectInterface.ObjectDataInterfacePK, String> instance = getNewInstance();
 
         ObjectInterface result = instance.find(entityManager, id);
 
@@ -263,7 +271,7 @@ public abstract class RepositoryTest {
     public void testFindAll() throws SQLException, Exception {
         System.out.println("findAll");
         EntityManager entityManager = getEntityManager();
-        Repository<ObjectInterface, Object, String> instance = getNewInstance();
+        Repository<ObjectInterface, ObjectInterface.ObjectDataInterfacePK, String> instance = getNewInstance();
 
         List result = instance.findAll(entityManager);
 
@@ -280,7 +288,7 @@ public abstract class RepositoryTest {
     public void testFindRange() throws SQLException, Exception {
         System.out.println("findRange");
         EntityManager entityManager = getEntityManager();
-        Repository<ObjectInterface, Object, String> instance = getNewInstance();
+        Repository<ObjectInterface, ObjectInterface.ObjectDataInterfacePK, String> instance = getNewInstance();
         Integer from = 1;
         Integer to = 1;
 
@@ -299,7 +307,7 @@ public abstract class RepositoryTest {
     public void testCount() throws SQLException, Exception {
         System.out.println("count");
         EntityManager entityManager = getEntityManager();
-        Repository<ObjectInterface, Object, String> instance = getNewInstance();
+        Repository<ObjectInterface, ObjectInterface.ObjectDataInterfacePK, String> instance = getNewInstance();
 
         Integer result = instance.count(entityManager);
 
@@ -316,7 +324,7 @@ public abstract class RepositoryTest {
     public void testCountToString() throws SQLException, Exception {
         System.out.println("countToString");
         EntityManager entityManager = getEntityManager();
-        Repository<ObjectInterface, Object, String> instance = getNewInstance();
+        Repository<ObjectInterface, ObjectInterface.ObjectDataInterfacePK, String> instance = getNewInstance();
 
         String result = instance.countToString(entityManager);
 

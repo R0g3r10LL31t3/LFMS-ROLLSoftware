@@ -15,10 +15,12 @@
  *
  *  CEO 2016: Rogério Lecarião Leite; ROLL Software
  */
-package com.rollsoftware.br.common.db.repo;
+package com.rollsoftware.br.lfms.db.impl.repo;
 
-import com.rollsoftware.br.common.db.entity.ObjectData;
 import com.rollsoftware.br.common.db.entity.ObjectInterface;
+import com.rollsoftware.br.common.db.repo.AbstractRepository;
+import com.rollsoftware.br.common.db.repo.RepositoryTest;
+import com.rollsoftware.br.lfms.db.impl.entity.Investor;
 import com.rollsoftware.br.test.util.EntityManagerInterface;
 import java.sql.SQLException;
 import org.junit.After;
@@ -29,20 +31,20 @@ import org.junit.BeforeClass;
 /**
  *
  * @author Rogério
- * @date January, 2017
+ * @date October, 2017
  */
-public class ObjectDataRepositoryTest extends RepositoryTest {
+public class InvestorRepositoryTest extends RepositoryTest {
 
     private ObjectInterface.ObjectDataInterfacePK entityPK;
     private ObjectInterface entity;
 
-    public ObjectDataRepositoryTest(EntityManagerInterface emInterface) {
+    public InvestorRepositoryTest(EntityManagerInterface emInterface) {
         super(emInterface);
     }
 
     @Override
-    public ObjectDataRepository getNewInstance() {
-        return new ObjectDataRepository();
+    public AbstractRepository getNewInstance() {
+        return new InvestorRepository();
     }
 
     @Override
@@ -54,12 +56,12 @@ public class ObjectDataRepositoryTest extends RepositoryTest {
     @Override
     public <ODPK extends ObjectInterface.ObjectDataInterfacePK>
             ODPK getEntityPK_NotFound() {
-        return (ODPK) new ObjectData.ObjectDataPK("", "");
+        return (ODPK) new Investor.ObjectDataPK("", "");
     }
 
     @Override
     public <T extends ObjectInterface> Class<T> getEntityClass() {
-        return (Class<T>) ObjectData.class;
+        return (Class<T>) Investor.class;
     }
 
     @Override
@@ -69,11 +71,15 @@ public class ObjectDataRepositoryTest extends RepositoryTest {
 
     @Override
     public <T extends ObjectInterface> T createEntity() {
-        ObjectData objectData = new ObjectData();
+        Investor investor = new Investor();
 
-        objectData.setUUID("uuid" + Math.random());
+        investor.setUUID("uuid" + Math.random());
 
-        return (T) objectData;
+        investor.setName("name" + Math.random());
+
+        investor.generateUUID();
+
+        return (T) investor;
     }
 
     @BeforeClass

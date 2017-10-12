@@ -45,7 +45,7 @@ import javax.ws.rs.core.MediaType;
  * @param <T>
  * @param <ID>
  */
-public abstract class AbstractServiceFacadeAsync<T extends ObjectInterface, ID>
+public abstract class AbstractServiceFacadeAsync<T extends ObjectInterface, ID extends ObjectInterface.ObjectDataInterfacePK>
         implements ServiceFacadeAsync<T, ID, String> {
 
     @Inject

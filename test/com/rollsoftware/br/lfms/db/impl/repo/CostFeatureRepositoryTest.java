@@ -15,10 +15,13 @@
  *
  *  CEO 2016: Rogério Lecarião Leite; ROLL Software
  */
-package com.rollsoftware.br.common.db.repo;
+package com.rollsoftware.br.lfms.db.impl.repo;
 
-import com.rollsoftware.br.common.db.entity.ObjectData;
 import com.rollsoftware.br.common.db.entity.ObjectInterface;
+import com.rollsoftware.br.common.db.repo.AbstractRepository;
+import com.rollsoftware.br.common.db.repo.RepositoryTest;
+import com.rollsoftware.br.lfms.db.impl.entity.Cost;
+import com.rollsoftware.br.lfms.db.impl.entity.CostFeature;
 import com.rollsoftware.br.test.util.EntityManagerInterface;
 import java.sql.SQLException;
 import org.junit.After;
@@ -29,20 +32,21 @@ import org.junit.BeforeClass;
 /**
  *
  * @author Rogério
- * @date January, 2017
+ * @date October, 2017
  */
-public class ObjectDataRepositoryTest extends RepositoryTest {
+public class CostFeatureRepositoryTest extends RepositoryTest {
 
+    private ObjectInterface.ObjectDataInterfacePK costPKSaved;
     private ObjectInterface.ObjectDataInterfacePK entityPK;
     private ObjectInterface entity;
 
-    public ObjectDataRepositoryTest(EntityManagerInterface emInterface) {
+    public CostFeatureRepositoryTest(EntityManagerInterface emInterface) {
         super(emInterface);
     }
 
     @Override
-    public ObjectDataRepository getNewInstance() {
-        return new ObjectDataRepository();
+    public AbstractRepository getNewInstance() {
+        return new CostFeatureRepository();
     }
 
     @Override
@@ -54,12 +58,12 @@ public class ObjectDataRepositoryTest extends RepositoryTest {
     @Override
     public <ODPK extends ObjectInterface.ObjectDataInterfacePK>
             ODPK getEntityPK_NotFound() {
-        return (ODPK) new ObjectData.ObjectDataPK("", "");
+        return (ODPK) new CostFeature.ObjectDataPK("", "");
     }
 
     @Override
     public <T extends ObjectInterface> Class<T> getEntityClass() {
-        return (Class<T>) ObjectData.class;
+        return (Class<T>) CostFeature.class;
     }
 
     @Override
@@ -69,11 +73,38 @@ public class ObjectDataRepositoryTest extends RepositoryTest {
 
     @Override
     public <T extends ObjectInterface> T createEntity() {
-        ObjectData objectData = new ObjectData();
+        Cost cost = load(Cost.class, costPKSaved);
 
-        objectData.setUUID("uuid" + Math.random());
+        CostFeature costFeature = new CostFeature();
 
-        return (T) objectData;
+        costFeature.setUUID("uuid" + Math.random());
+
+        costFeature.setLabel("label" + Math.random());
+        costFeature.setValue("value" + Math.random());
+
+        costFeature.setCost(cost);
+
+        costFeature.generateUUID();
+
+        return (T) costFeature;
+    }
+
+    private Cost.ObjectDataPK saveCost() {
+
+        Cost cost = new Cost();
+
+        cost.setUUID("uuid" + Math.random());
+
+        cost.setName("name" + Math.random());
+        cost.setDescription("description" + Math.random());
+
+        cost.generateUUID();
+
+        save(cost);
+
+        System.out.println("Save Cost: " + cost.getUUID());
+
+        return cost.getODPK();
     }
 
     @BeforeClass
@@ -91,6 +122,7 @@ public class ObjectDataRepositoryTest extends RepositoryTest {
     public void setUp() throws SQLException {
         try {
             super.setUp();
+            costPKSaved = saveCost();
             entity = createEntity();
 
             save(entity);

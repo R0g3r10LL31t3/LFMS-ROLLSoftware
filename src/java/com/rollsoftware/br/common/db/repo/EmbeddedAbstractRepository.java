@@ -33,7 +33,7 @@ import javax.persistence.EntityManager;
  * @param <ID>
  */
 public abstract class EmbeddedAbstractRepository<
-        P extends ObjectInterface, T extends ObjectInterface, ID>
+        P extends ObjectInterface, T extends ObjectInterface, ID extends ObjectInterface.ObjectDataInterfacePK>
         implements Repository<T, ID, String> {
 
     private final AbstractRepository<P, ID> delegate;

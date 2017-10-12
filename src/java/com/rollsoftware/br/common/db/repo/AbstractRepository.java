@@ -37,7 +37,7 @@ import org.eclipse.persistence.config.QueryHints;
  * @param <ID>
  */
 public abstract class AbstractRepository<
-        T extends ObjectInterface, ID>
+        T extends ObjectInterface, ID extends ObjectInterface.ObjectDataInterfacePK>
         implements Repository<T, ID, String> {
 
     private final Class<T> entityClass;
@@ -61,13 +61,12 @@ public abstract class AbstractRepository<
     @Override
     public String edit(EntityManager em, ID id, T entity)
             throws SQLException, Exception {
-        if (!id.equals(entity.getUUID())) {
+        if (!entity.equalsODPK(id)) {
             throw new IllegalArgumentException(
                     "ID " + id + " is not equals "
                     + "to Entity.ID " + entity.getUUID());
         }
-        edit(em, entity);
-        return "Edited(id,entity): " + entity;
+        return edit(em, entity);
     }
 
     @Override

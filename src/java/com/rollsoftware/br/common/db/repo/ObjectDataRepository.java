@@ -27,7 +27,7 @@ import javax.enterprise.context.RequestScoped;
  */
 @RequestScoped
 public class ObjectDataRepository
-        extends AbstractRepository<ObjectData, String> {
+        extends AbstractRepository<ObjectData, ObjectData.ObjectDataPK> {
 
     public ObjectDataRepository() {
         super(ObjectData.class);

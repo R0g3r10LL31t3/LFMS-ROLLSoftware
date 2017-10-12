@@ -50,13 +50,14 @@ public class ObjectDataTest {
     protected static EntityManagerFactory EMF;
     protected static EntityManager EM;
 
-    private Object objectDataPK;
+    private ObjectData.ObjectDataPK objectDataPK;
 
     public ObjectDataTest() {
     }
 
-    protected Object getObjectDataPK() {
-        return objectDataPK;
+    protected <T extends ObjectData.ObjectDataPK>
+            T getObjectDataPK() {
+        return (T) objectDataPK;
     }
 
     protected <T extends ObjectData>
@@ -68,7 +69,6 @@ public class ObjectDataTest {
             T createObjectData() {
         ObjectData objectData = new ObjectData();
         objectData.setUUID("uuid" + Math.random());
-        objectData.setType("type");
         objectData.generateUUID();
         return (T) objectData;
     }
@@ -77,10 +77,12 @@ public class ObjectDataTest {
             void save(T objectData) {
         EM.getTransaction().begin();
 
-        EM.createNativeQuery("set schema ACCOUNT_MANAGER_DB_APP");
+        EM.createNativeQuery("set schema LFMS_DB");
 
         EM.persist(objectData);
         EM.flush();
+
+        EM.refresh(objectData);
 
         EM.getTransaction().commit();
     }
@@ -94,7 +96,9 @@ public class ObjectDataTest {
             T load(Class<T> clazz, Object id) {
         ObjectData objectData
                 = EM.find(clazz, id);
-        EM.refresh(objectData);
+        if (objectData != null) {
+            EM.refresh(objectData);
+        }
         return (T) objectData;
     }
 
@@ -121,7 +125,7 @@ public class ObjectDataTest {
 
             save(objectData);
 
-            objectDataPK = objectData.getUUID();
+            objectDataPK = objectData.getODPK();
         } catch (Throwable ex) {
             ex.printStackTrace(System.out);
             throw ex;
@@ -143,8 +147,9 @@ public class ObjectDataTest {
 
         System.out.println("Object Data: " + objectData);
         System.out.println("Object Data UUID: " + objectData.getUUID());
+        System.out.println("Object Data ODPK: " + objectData.getODPK());
 
-        assertEquals(getObjectDataPK(), objectData.getUUID());
+        assertEquals(getObjectDataPK(), objectData.getODPK());
     }
 
     @Test
@@ -206,9 +211,14 @@ public class ObjectDataTest {
 
     @Test
     public void testEquals() {
-        ObjectData objectData = createObjectData();
+        ObjectData objectData1 = createObjectData();
 
-        assertEquals(objectData, objectData);
+        save(objectData1);
+
+        ObjectData objectData2 = load(getObjectDataClass(),
+                objectData1.getODPK());
+
+        assertEquals(objectData1, objectData2);
     }
 
     @Test
@@ -221,7 +231,7 @@ public class ObjectDataTest {
 
     @Test
     public void testType() {
-        ObjectData objectData = createObjectData();
+        ObjectData objectData = load();
 
         String className = objectData.getClass().getSimpleName();
         String type = objectData.getType();

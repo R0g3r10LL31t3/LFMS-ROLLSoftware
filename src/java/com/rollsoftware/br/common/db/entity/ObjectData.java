@@ -30,6 +30,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
@@ -63,6 +64,7 @@ import javax.xml.bind.annotation.XmlType;
             ,@UniqueConstraint(columnNames = {"OBJ_TYPE", "OBJ_UUID_PK"})
         }
 )
+@IdClass(ObjectData.ObjectDataPK.class)
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(
         name = "OBJ_TYPE",
@@ -109,10 +111,11 @@ public class ObjectData
     @Column(name = "OBJ_ID_PK", nullable = false)
     private Integer id;
 
+    @Id
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 64)
-    @Column(name = "OBJ_TYPE", nullable = false, length = 64)
+    @Size(min = 1, max = 128)
+    @Column(name = "OBJ_TYPE", nullable = false, length = 128)
     @XmlElement(name = "objType")
     private String type;
 
@@ -127,13 +130,13 @@ public class ObjectData
 
     @Basic(optional = false)
     @NotNull
-    @Column(name = "OBJ_DATECREATED", nullable = false)
+    @Column(name = "OBJ_DATECREATED", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
 
     @Basic(optional = false)
     @NotNull
-    @Column(name = "OBJ_DATEACCESSED", nullable = false)
+    @Column(name = "OBJ_DATEACCESSED", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAccessed;
 
@@ -142,7 +145,14 @@ public class ObjectData
     }
 
     public ObjectData(Integer id) {
-        this(id, "", "");
+        this(id, "ObjectData");
+    }
+
+    public ObjectData(Integer id, String uuid) {
+        this(id, uuid,
+                Calendar.getInstance().getTime(),
+                Calendar.getInstance().getTime(),
+                0);
     }
 
     public ObjectData(Integer id, String type, String uuid) {
@@ -164,6 +174,14 @@ public class ObjectData
         this.objVersion = objVersion;
     }
 
+    private ObjectData(
+            Integer id, String uuid,
+            Date dateCreated, Date dateAccessed,
+            Integer objVersion) {
+        this(id, "", uuid, dateCreated, dateAccessed, objVersion);
+        this.type = this.getClass().getSimpleName();
+    }
+
     @Override
     public Integer getId() {
         return id;
@@ -175,10 +193,6 @@ public class ObjectData
 
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     @Override
@@ -216,6 +230,22 @@ public class ObjectData
     }
 
     @Override
+    public <T extends ObjectDataInterfacePK> T getODPK() {
+        return (T) new ObjectDataPK(getType(), getUUID());
+    }
+
+    @Override
+    public boolean equalsODPK(ObjectDataInterfacePK odpk) {
+        if (odpk == null) {
+            return false;
+        }
+        if (!(odpk instanceof ObjectDataInterfacePK)) {
+            return false;
+        }
+        return Objects.equals(getODPK(), odpk);
+    }
+
+    @Override
     public int hashCode() {
         int _hash = super.hashCode();
         _hash += Objects.hashCode(getId());
@@ -229,9 +259,6 @@ public class ObjectData
         // TODO: Warning - this method won't work
         // in the case the id fields are not set
         if (object == null) {
-            return false;
-        }
-        if (!super.equals(object)) {
             return false;
         }
         if (!(object instanceof ObjectData)) {
@@ -255,5 +282,78 @@ public class ObjectData
         return "ObjectData[id=" + getId()
                 + ", uuid=" + getUUID()
                 + ", type=" + getType() + "]";
+    }
+
+    @XmlRootElement(name = "objectDataPK")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "objectDataPK", propOrder = {
+        "type", "uuid"
+    })
+    public static class ObjectDataPK
+            implements ObjectDataInterfacePK, Serializable {
+
+        @Column(name = "TYPE_PK")
+        private String type;
+
+        @Column(name = "UUID_PK")
+        private String uuid;
+
+        public ObjectDataPK() {
+            this("", "");
+        }
+
+        public ObjectDataPK(String type, String uuid) {
+            this.type = type;
+            this.uuid = uuid;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getUUID() {
+            return uuid;
+        }
+
+        public void setUUID(String uuid) {
+            this.uuid = uuid;
+        }
+
+        @Override
+        public int hashCode() {
+            int _hash = super.hashCode();
+            _hash += Objects.hashCode(getUUID());
+            _hash += Objects.hashCode(getType());
+            return _hash;
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            // TODO: Warning - this method won't work
+            // in the case the id fields are not set
+            if (object == null) {
+                return false;
+            }
+            if (!(object instanceof ObjectDataPK)) {
+                return false;
+            }
+            final ObjectDataPK other = (ObjectDataPK) object;
+            if (!Objects.equals(this.getUUID(), other.getUUID())) {
+                return false;
+            }
+            if (!Objects.equals(this.getType(), other.getType())) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return "uuid=" + getUUID() + ", type=" + getType();
+        }
     }
 }

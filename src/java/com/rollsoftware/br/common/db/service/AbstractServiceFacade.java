@@ -39,7 +39,7 @@ import javax.ws.rs.core.MediaType;
  * @param <T>
  * @param <ID>
  */
-public abstract class AbstractServiceFacade<T extends ObjectInterface, ID>
+public abstract class AbstractServiceFacade<T extends ObjectInterface, ID extends ObjectInterface.ObjectDataInterfacePK>
         implements ServiceFacade<T, ID, String> {
 
     public AbstractServiceFacade() {

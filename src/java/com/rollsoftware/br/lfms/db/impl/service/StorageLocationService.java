@@ -15,14 +15,15 @@
  *
  *  CEO 2016: Rogério Lecarião Leite; ROLL Software
  */
-package com.rollsoftware.br.common.db.service;
+package com.rollsoftware.br.lfms.db.impl.service;
 
 import com.rollsoftware.br.common.db.DBResourceWebListener;
 import com.rollsoftware.br.common.db.em.Synchronization;
 import com.rollsoftware.br.common.db.em.Synchronization.SyncType;
-import com.rollsoftware.br.common.db.entity.ObjectData;
-import com.rollsoftware.br.common.db.repo.ObjectDataRepository;
 import com.rollsoftware.br.common.db.repo.Repository;
+import com.rollsoftware.br.common.db.service.*;
+import com.rollsoftware.br.lfms.db.impl.entity.StorageLocation;
+import com.rollsoftware.br.lfms.db.impl.repo.StorageLocationRepository;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -35,28 +36,28 @@ import javax.ws.rs.Path;
  */
 //@javax.ejb.Stateless
 @RequestScoped
-@Path("/db/object")
-public class ObjectDataService
-        extends AbstractServiceFacade<ObjectData, ObjectData.ObjectDataPK> {
+@Path("/db/storagelocation")
+public class StorageLocationService
+        extends AbstractServiceFacade<StorageLocation, StorageLocation.ObjectDataPK> {
 
     //@PersistenceContext(unitName = "LFMSPU")
     @Inject
-    private ObjectDataRepository repo;
+    private StorageLocationRepository repo;
 
     @Inject
-    @Synchronization(SyncType.ASYNC)
+    @Synchronization(SyncType.SYNC)
     private EntityManager em;
 
-    public ObjectDataService() {
+    public StorageLocationService() {
     }
 
-    public ObjectDataService(ObjectDataRepository repo, EntityManager em) {
+    public StorageLocationService(StorageLocationRepository repo, EntityManager em) {
         this.repo = repo;
         this.em = em;
     }
 
     @Override
-    public Repository<ObjectData, ObjectData.ObjectDataPK, String>
+    public Repository<StorageLocation, StorageLocation.ObjectDataPK, String>
             getRepository() {
         return repo;
     }

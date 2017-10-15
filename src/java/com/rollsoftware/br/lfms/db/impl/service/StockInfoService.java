@@ -15,14 +15,15 @@
  *
  *  CEO 2016: Rogério Lecarião Leite; ROLL Software
  */
-package com.rollsoftware.br.common.db.service;
+package com.rollsoftware.br.lfms.db.impl.service;
 
 import com.rollsoftware.br.common.db.DBResourceWebListener;
 import com.rollsoftware.br.common.db.em.Synchronization;
 import com.rollsoftware.br.common.db.em.Synchronization.SyncType;
-import com.rollsoftware.br.common.db.entity.ObjectData;
-import com.rollsoftware.br.common.db.repo.ObjectDataRepository;
 import com.rollsoftware.br.common.db.repo.Repository;
+import com.rollsoftware.br.common.db.service.*;
+import com.rollsoftware.br.lfms.db.impl.entity.StockInfo;
+import com.rollsoftware.br.lfms.db.impl.repo.StockInfoRepository;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -35,28 +36,28 @@ import javax.ws.rs.Path;
  */
 //@javax.ejb.Stateless
 @RequestScoped
-@Path("/db/object")
-public class ObjectDataService
-        extends AbstractServiceFacade<ObjectData, ObjectData.ObjectDataPK> {
+@Path("/db/stockInfo")
+public class StockInfoService
+        extends AbstractServiceFacade<StockInfo, StockInfo.ObjectDataPK> {
 
     //@PersistenceContext(unitName = "LFMSPU")
     @Inject
-    private ObjectDataRepository repo;
+    private StockInfoRepository repo;
 
     @Inject
-    @Synchronization(SyncType.ASYNC)
+    @Synchronization(SyncType.SYNC)
     private EntityManager em;
 
-    public ObjectDataService() {
+    public StockInfoService() {
     }
 
-    public ObjectDataService(ObjectDataRepository repo, EntityManager em) {
+    public StockInfoService(StockInfoRepository repo, EntityManager em) {
         this.repo = repo;
         this.em = em;
     }
 
     @Override
-    public Repository<ObjectData, ObjectData.ObjectDataPK, String>
+    public Repository<StockInfo, StockInfo.ObjectDataPK, String>
             getRepository() {
         return repo;
     }

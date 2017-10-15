@@ -17,6 +17,7 @@
  */
 package com.rollsoftware.br.common.db.service;
 
+import com.rollsoftware.br.common.db.entity.ObjectInterface;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -29,7 +30,7 @@ import java.util.List;
  * @param <ID> uuid type
  * @param <R> result type
  */
-public interface ServiceFacade<T, ID, R> {
+public interface ServiceFacade<T extends ObjectInterface, ID extends ObjectInterface.ObjectDataInterfacePK, R> {
 
     public R create(T entity)
             throws SQLException, Exception;

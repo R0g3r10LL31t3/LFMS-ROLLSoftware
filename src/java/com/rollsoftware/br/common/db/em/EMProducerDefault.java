@@ -17,7 +17,6 @@
  */
 package com.rollsoftware.br.common.db.em;
 
-import com.rollsoftware.br.common.db.em.Synchronization.SyncType;
 import java.util.Map;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
@@ -45,7 +44,6 @@ public class EMProducerDefault implements EMProducer {
 
     @Override
     @Produces
-    @Synchronization(SyncType.SYNC)
     @Default
     public EntityManager createEntityManager() {
 
@@ -58,7 +56,7 @@ public class EMProducerDefault implements EMProducer {
 
     @Override
     public void closeEntityManager(
-            @Disposes @Synchronization(SyncType.SYNC) EntityManager em) {
+            @Disposes @Default EntityManager em) {
         try {
             if (em != null) {
 
